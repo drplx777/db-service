@@ -18,14 +18,6 @@ services:
     ports:
       - "8080:8080"
 
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: todo
-      POSTGRES_USER: todo
-      POSTGRES_PASSWORD: secret
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
 volumes:
   pgdata:

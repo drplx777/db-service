@@ -35,6 +35,9 @@ func ConnectDB() (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("error pinging database: %v", err)
 	}
 	fmt.Println("Connected to the database successfully")
+
+	CreateTable(pool) // Создание таблицы при подключении
+	log.Println("Table creation check completed")
 	return pool, nil
 }
 
