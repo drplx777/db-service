@@ -40,11 +40,12 @@ func createTask(pool *pgxpool.Pool) fiber.Handler {
 
 func ListTask(pool *pgxpool.Pool) fiber.Handler {
 	return func(c fiber.Ctx) error {
-		rows, err := pool.Query(context.Background(), "SELECT id, title, description, created_at, updated_at, done_at, completed FROM tasks WHERE id = $1")
+		rows, err := pool.Query(context.Background(), "SELECT id, title, description, created_at, updated_at, done_at, completed FROM tasks")
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}
 		defer rows.Close()
+
 		var tasks []model.Task
 		for rows.Next() {
 			var t model.Task
