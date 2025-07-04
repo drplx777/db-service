@@ -9,11 +9,11 @@ import (
 )
 
 func RegisterTaskRoutes(app *fiber.App, pool *pgxpool.Pool) {
-	app.Post(".create", createTask(pool))
-	app.Get(".get/:id", ListTask(pool))
-	app.Delete(".delete/:id", deleteTask(pool))
-	app.Put(".update/:id", doneTask(pool))
-
+	app.Post("/create", createTask(pool))
+	app.Get("/list", ListTask(pool))
+	app.Get("/task/by_id", getTaskByID(pool))
+	app.Delete("/delete", deleteTask(pool))
+	app.Put("/update", doneTask(pool))
 }
 
 func createTask(pool *pgxpool.Pool) fiber.Handler {
@@ -82,6 +82,23 @@ func doneTask(pool *pgxpool.Pool) fiber.Handler {
 		if err := pool.QueryRow(context.Background(),
 			"SELECT id, title, description, created_at, updated_at, done_at, completed FROM tasks WHERE id = $1", id,
 		).Scan(&t.ID, &t.Title, &t.Description, &t.CreatedAt, &t.UpdatedAt, &t.DoneAt, &t.Completed); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+		return c.JSON(t)
+	}
+}
+
+func getTaskByID(pool *pgxpool.Pool) fiber.Handler {
+	return func(c fiber.Ctx) error {
+		id := c.Query("id")
+		var t model.Task
+		err := pool.QueryRow(context.Background(),
+			"SELECT id, title, description, created_at, updated_at, done_at, completed FROM tasks WHERE id = $1", id,
+		).Scan(&t.ID, &t.Title, &t.Description, &t.CreatedAt, &t.UpdatedAt, &t.DoneAt, &t.Completed)
+		if err != nil {
+			if err.Error() == "no rows in result set" {
+				return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "task not found"})
+			}
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}
 		return c.JSON(t)
