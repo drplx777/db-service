@@ -22,7 +22,7 @@ func createTask(pool *pgxpool.Pool) fiber.Handler {
 			Title       string `json:"title"`
 			Description string `json:"description"`
 		}
-		if err := c.Bind().Body(&input); err != nil {
+		if err := c.Bind().JSON(&input); err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 		}
 		var task model.Task
