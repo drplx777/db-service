@@ -91,6 +91,9 @@ func doneTask(pool *pgxpool.Pool) fiber.Handler {
 func getTaskByID(pool *pgxpool.Pool) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		id := c.Query("id")
+		if id == "" {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "missing task ID"})
+		}
 		var t model.Task
 		err := pool.QueryRow(context.Background(),
 			"SELECT id, title, description, created_at, updated_at, done_at, completed FROM tasks WHERE id = $1", id,
@@ -101,6 +104,41 @@ func getTaskByID(pool *pgxpool.Pool) fiber.Handler {
 			}
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}
+		return c.JSON(t)
+	}
+}
+
+func updateTask(pool *pgxpool.Pool) fiber.Handler {
+	const updateTaskSQL = `
+        UPDATE tasks
+        SET
+            title       = COALESCE(NULLIF($2, ''), title),
+            description = COALESCE(NULLIF($3, ''), description),
+            updated_at  = NOW()
+        WHERE id = $1
+        RETURNING id, title, description, created_at, updated_at, done_at, completed;
+    `
+	return func(c fiber.Ctx) error {
+		var input struct {
+			Title       string `json:"title",omitempty`
+			Description string `json:"description",omitempty`
+		}
+		if err := c.Bind().JSON(&input); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+
+		}
+		id := c.Query("id")
+		if id == "" {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "missing task ID"})
+		}
+		var t model.Task
+		err := pool.QueryRow(context.Background(),
+			updateTaskSQL, id, input.Title, input.Description,
+		).Scan(&t.ID, &t.Title, &t.Description, &t.CreatedAt, &t.UpdatedAt, &t.DoneAt, &t.Completed)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		}
+
 		return c.JSON(t)
 	}
 }

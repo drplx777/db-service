@@ -19,7 +19,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // дефолтный порт если переменная окружения не задана
+		port = "8000" // дефолтный порт если переменная окружения не задана
 	}
 	app := fiber.New()
 	handler.RegisterTaskRoutes(app, pool)
