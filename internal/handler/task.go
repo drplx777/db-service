@@ -13,7 +13,8 @@ func RegisterTaskRoutes(app *fiber.App, pool *pgxpool.Pool) {
 	app.Get("/list", ListTask(pool))
 	app.Get("/task/by_id", getTaskByID(pool))
 	app.Delete("/delete", deleteTask(pool))
-	app.Put("/update", doneTask(pool))
+	app.Put("/update", updateTask(pool))
+	app.Put("/done", doneTask(pool))
 }
 
 func createTask(pool *pgxpool.Pool) fiber.Handler {
