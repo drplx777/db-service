@@ -11,7 +11,7 @@ import (
 )
 
 func ConnectDB() (*pgxpool.Pool, error) {
-	if err := dotenv.LoadEnv(); err != nil {
+	if err := dotenv.LoadEnv("env"); err != nil {
 		return nil, fmt.Errorf("error loading .env file: %v", err)
 	}
 
