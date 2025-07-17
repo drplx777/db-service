@@ -121,8 +121,8 @@ func updateTask(pool *pgxpool.Pool) fiber.Handler {
     `
 	return func(c fiber.Ctx) error {
 		var input struct {
-			Title       string `json:"title",omitempty`
-			Description string `json:"description",omitempty`
+			Title       string `json:"title"`
+			Description string `json:"description"`
 		}
 		if err := c.Bind().JSON(&input); err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})

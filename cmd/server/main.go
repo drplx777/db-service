@@ -3,9 +3,8 @@ package main
 import (
 	"db-service/internal/database"
 	"db-service/internal/handler"
-	"os"
-
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v3"
 )

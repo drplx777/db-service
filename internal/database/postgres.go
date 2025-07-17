@@ -6,12 +6,12 @@ import (
 	"log"
 	"os"
 
+	"github.com/KoNekoD/dotenv/pkg/dotenv"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/joho/godotenv"
 )
 
 func ConnectDB() (*pgxpool.Pool, error) {
-	if err := godotenv.Load(); err != nil {
+	if err := dotenv.LoadEnv(); err != nil {
 		return nil, fmt.Errorf("error loading .env file: %v", err)
 	}
 
