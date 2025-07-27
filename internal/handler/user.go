@@ -16,32 +16,38 @@ func RegisterUserRoutes(app *fiber.App, pool *pgxpool.Pool) {
 
 func registerUser(pool *pgxpool.Pool) fiber.Handler {
 	return func(c fiber.Ctx) error {
-		var user model.User
-		if err := c.Bind().JSON(&user); err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
+		var req struct {
+			Name       string `json:"name"`
+			Surname    string `json:"surname"`
+			Middlename string `json:"middlename,omitempty"`
+			Login      string `json:"login"`
+			RoleID     int    `json:"roleID"`
+			Password   string `json:"password"`
+		}
+
+		if err := c.Bind().JSON(&req); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid request"})
 		}
 
 		// Хеширование пароля
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Could not hash password"})
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "could not hash password"})
 		}
-		user.Password = string(hashedPassword)
 
+		var userID int
 		err = pool.QueryRow(context.Background(),
-			`INSERT INTO users (name, sumame, middlename, login, roleID, password) 
-			 VALUES ($1, $2, $3, $4, $5, $6) 
-			 RETURNING id`,
-			user.Name, user.Surname, user.Middlename, user.Login, user.RoleID, user.Password,
-		).Scan(&user.ID)
+			`INSERT INTO users (name, surname, middlename, login, roleID, password) 
+             VALUES ($1, $2, $3, $4, $5, $6) 
+             RETURNING id`,
+			req.Name, req.Surname, req.Middlename, req.Login, req.RoleID, string(hashedPassword),
+		).Scan(&userID)
 
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}
 
-		// Не возвращаем пароль в ответе
-		user.Password = ""
-		return c.Status(fiber.StatusCreated).JSON(user)
+		return c.Status(fiber.StatusCreated).JSON(fiber.Map{"id": userID})
 	}
 }
 
