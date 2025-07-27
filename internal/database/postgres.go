@@ -89,8 +89,8 @@ CREATE TABLE IF NOT EXISTS tasks (
 );`
 
 	if _, err := pool.Exec(context.Background(), query); err != nil {
-		return fmt.Errorf("ошибка при создании таблицы: %w", err)
+		return fmt.Errorf("ошибка при создании таблиц: %w", err)
 	}
-	log.Println("Таблица tasks успешно создана или уже существует")
+	log.Println("Таблицы успешно созданы или уже существуют")
 	return nil
 }
