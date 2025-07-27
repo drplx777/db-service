@@ -27,7 +27,7 @@ type Task struct {
 type User struct {
 	ID         int    `db:"id" json:"ID"`
 	Name       string `db:"name" json:"user"`
-	Sumame     string `db:"sumame" json:"reviewerID"`
+	Surname    string `db:"surname" json:"reviewerID"`
 	Middlename string `db:"middlename" json:"middlename"`
 	Login      string `db:"login" json:"login"`
 	RoleID     int    `db:"roleID" json:"roleID"`

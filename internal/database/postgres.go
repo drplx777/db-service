@@ -59,7 +59,7 @@ func CreateTable(pool *pgxpool.Pool) error {
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    sumame TEXT NOT NULL,
+    surname TEXT NOT NULL,
     middlename TEXT,
     login TEXT NOT NULL UNIQUE,
     roleID INTEGER NOT NULL,

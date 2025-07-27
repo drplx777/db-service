@@ -147,4 +147,3 @@ func updateTask(pool *pgxpool.Pool) fiber.Handler {
 // TODO: Add error handling for each function
 // TODO: Add validation for input data
 // TODO: add logging for each function
-// TODO: add update discription and title func

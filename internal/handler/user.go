@@ -32,7 +32,7 @@ func registerUser(pool *pgxpool.Pool) fiber.Handler {
 			`INSERT INTO users (name, sumame, middlename, login, roleID, password) 
 			 VALUES ($1, $2, $3, $4, $5, $6) 
 			 RETURNING id`,
-			user.Name, user.Sumame, user.Middlename, user.Login, user.RoleID, user.Password,
+			user.Name, user.Surname, user.Middlename, user.Login, user.RoleID, user.Password,
 		).Scan(&user.ID)
 
 		if err != nil {
@@ -56,7 +56,7 @@ func getUserByLogin(pool *pgxpool.Pool) fiber.Handler {
 		err := pool.QueryRow(context.Background(),
 			`SELECT id, name, sumame, middlename, login, roleID, password 
 			 FROM users WHERE login = $1`, login,
-		).Scan(&user.ID, &user.Name, &user.Sumame, &user.Middlename, &user.Login, &user.RoleID, &user.Password)
+		).Scan(&user.ID, &user.Name, &user.Surname, &user.Middlename, &user.Login, &user.RoleID, &user.Password)
 
 		if err != nil {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "user not found"})
