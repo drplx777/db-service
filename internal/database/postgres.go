@@ -53,18 +53,40 @@ func CloseDB(pool *pgxpool.Pool) {
 
 // CreateTable создаёт таблицу tasks с UUID PK и timestamp полями
 func CreateTable(pool *pgxpool.Pool) error {
-	query := `
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+	query := `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Создание таблицы Users
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    sumame TEXT NOT NULL,
+    middlename TEXT,
+    login TEXT NOT NULL UNIQUE,
+    roleID INTEGER NOT NULL,
+    password TEXT NOT NULL,
+    token TEXT
+);
+
+-- Создание таблицы Tasks
 CREATE TABLE IF NOT EXISTS tasks (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title TEXT NOT NULL,
     description TEXT NOT NULL,
+    status TEXT NOT NULL,
+    "reporterD" TEXT,
+    "assignerID" TEXT,
+    "reviewerID" TEXT,
+    "approverID" TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    done_at TIMESTAMPTZ NULL,
+    "started_At" TIMESTAMPTZ,
+    done_at TIMESTAMPTZ,
+    deadline TIMESTAMPTZ NOT NULL,
+    "dashboardID" TEXT,
+    "blockedBy" TEXT,
+    "approveStatus" BOOLEAN NOT NULL DEFAULT FALSE,
     completed BOOLEAN NOT NULL DEFAULT FALSE
-);	`
+);`
 
 	if _, err := pool.Exec(context.Background(), query); err != nil {
 		return fmt.Errorf("ошибка при создании таблицы: %w", err)

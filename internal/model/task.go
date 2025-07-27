@@ -9,18 +9,18 @@ type Task struct {
 	Title         string     `db:"title" json:"title"`
 	Description   string     `db:"description" json:"description"`
 	Status        string     `db:"status" json:"status"`
-	reporterD     string     `db:"reporterD" json:"reporterD"`
-	assignerID    string     `db:"assignerID" json:"assignerID"`
-	reviewerID    string     `db:"reviewerID" json:"reviewerID"`
-	approverID    string     `db:"approverID" json:"approverID"`
+	ReporterD     string     `db:"reporterD" json:"reporterD"`
+	AssignerID    string     `db:"assignerID" json:"assignerID"`
+	ReviewerID    string     `db:"reviewerID" json:"reviewerID"`
+	ApproverID    string     `db:"approverID" json:"approverID"`
 	CreatedAt     time.Time  `db:"created_at" json:"created_at"`
 	UpdatedAt     time.Time  `db:"updated_at" json:"updated_at"`
 	StartedAt     time.Time  `db:"started_At" json:"started_At"`
 	DoneAt        *time.Time `db:"done_at" json:"done_at,omitempty"`
 	DeadLine      time.Time  `db:"deadline" json:"deadline"`
-	dashboardID   string     `db:"dashboardID" json:"dashboardID"`
-	blockedBy     string     `db:"blockedBy" json"blockedBy"`
-	approveStatus bool       `db:"approveStatus" json"approveStatus"`
+	DashboardID   string     `db:"dashboardID" json:"dashboardID"`
+	DlockedBy     string     `db:"blockedBy" json"blockedBy"`
+	ApproveStatus bool       `db:"approveStatus" json"approveStatus"`
 	Completed     bool       `db:"completed" json:"completed"`
 }
 
