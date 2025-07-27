@@ -19,8 +19,8 @@ type Task struct {
 	DoneAt        *time.Time `db:"done_at" json:"done_at,omitempty"`
 	DeadLine      time.Time  `db:"deadline" json:"deadline"`
 	DashboardID   string     `db:"dashboardID" json:"dashboardID"`
-	DlockedBy     string     `db:"blockedBy" json"blockedBy"`
-	ApproveStatus bool       `db:"approveStatus" json"approveStatus"`
+	DlockedBy     string     `db:"blockedBy" json:"blockedBy"`
+	ApproveStatus bool       `db:"approveStatus" json:"approveStatus"`
 	Completed     bool       `db:"completed" json:"completed"`
 }
 
