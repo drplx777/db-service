@@ -31,6 +31,7 @@ func main() {
 	app := fiber.New()
 	app.Use(middleware.SlogLogger())
 	handler.RegisterTaskRoutes(app, pool)
+	handler.RegisterUserRoutes(app, pool)
 
 	slog.Info("Service started", "port", 8080)
 	slog.Warn("Low disk space", "disk", "/dev/sda1", "free_percent", 5)
