@@ -11,6 +11,7 @@ import (
 
 func RegisterUserRoutes(app *fiber.App, pool *pgxpool.Pool) {
 	app.Post("/user/register", registerUser(pool))
+	app.Post("/user/login", loginUser(pool)) // Добавлен новый эндпоинт
 	app.Get("/user/by-login", getUserByLogin(pool))
 }
 
@@ -68,6 +69,35 @@ func getUserByLogin(pool *pgxpool.Pool) fiber.Handler {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "user not found"})
 		}
 
+		return c.JSON(user)
+	}
+}
+func loginUser(pool *pgxpool.Pool) fiber.Handler {
+	return func(c fiber.Ctx) error {
+		var req struct {
+			Login    string `json:"login"`
+			Password string `json:"password"`
+		}
+
+		if err := c.Bind().JSON(&req); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
+		}
+
+		var user model.User
+		err := pool.QueryRow(context.Background(),
+			`SELECT id, name, surname, middlename, login, roleID, password 
+             FROM users WHERE login = $1`, req.Login,
+		).Scan(&user.ID, &user.Name, &user.Surname, &user.Middlename, &user.Login, &user.RoleID, &user.Password)
+
+		if err != nil {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid credentials"})
+		}
+
+		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid credentials"})
+		}
+
+		user.Password = "" // Не возвращаем пароль
 		return c.JSON(user)
 	}
 }
