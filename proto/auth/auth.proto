@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "api-service/gen/proto/auth;auth";
+
+service AuthService {
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
+
+message RegisterRequest {
+  string name = 1;
+  string surname = 2;
+  string login = 3;    // Было username
+  string email = 4;    // Добавлено
+  string password = 5;
+}
+
+message RegisterResponse {
+  int32 user_id = 1;
+}
+
+message LoginRequest {
+  string login = 1;    // Было username
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+}
+
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+message ValidateTokenResponse {
+  int32 user_id = 1;
+}

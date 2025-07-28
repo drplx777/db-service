@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package task;
+
+option go_package = "api-service/gen/proto/task;task";
+
+service TaskService {
+  rpc CreateTask(CreateTaskRequest) returns (Task);
+  rpc GetUserTasks(GetUserTasksRequest) returns (GetUserTasksResponse);
+  rpc GetTaskByID(GetTaskByIDRequest) returns (Task);
+  rpc UpdateTask(UpdateTaskRequest) returns (Task);
+  rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse);
+  rpc MarkTaskDone(MarkTaskDoneRequest) returns (Task);
+}
+
+message Task {
+  int32 id = 1;
+  string title = 2;
+  string description = 3;
+  int32 user_id = 4;
+  bool done = 5;
+}
+
+message CreateTaskRequest {
+  string title = 1;
+  string description = 2;
+  int32 user_id = 3;
+}
+
+message GetUserTasksRequest {
+  int32 user_id = 1;
+}
+
+message GetUserTasksResponse {
+  repeated Task tasks = 1;
+}
+
+message GetTaskByIDRequest {
+  int32 id = 1;
+}
+
+message UpdateTaskRequest {
+  int32 id = 1;
+  string title = 2;
+  string description = 3;
+}
+
+message DeleteTaskRequest {
+  int32 id = 1;
+}
+
+message DeleteTaskResponse {
+  bool success = 1;
+}
+
+message MarkTaskDoneRequest {
+  int32 id = 1;
+}
