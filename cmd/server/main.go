@@ -12,12 +12,6 @@ import (
 )
 
 func main() {
-	// Настройка логирования
-	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
-	}))
-	slog.SetDefault(logger)
-
 	pool, err := database.ConnectDB()
 	if err != nil {
 		log.Fatalf("DB init error: %v", err)
