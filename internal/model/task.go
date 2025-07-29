@@ -5,7 +5,7 @@ import (
 )
 
 type Task struct {
-	ID            string     `db:"id" json:"id"`
+	ID            string     `db:"id" pk:"true" json:"id"`
 	Title         string     `db:"title" json:"title"`
 	Description   string     `db:"description" json:"description"`
 	Status        string     `db:"status" json:"status"`
@@ -25,7 +25,7 @@ type Task struct {
 }
 
 type User struct {
-	ID         int    `db:"id" json:"ID"`
+	ID         int    `db:"id" pk:"true" json:"ID"`
 	Name       string `db:"name" json:"user"`
 	Surname    string `db:"surname" json:"reviewerID"`
 	Middlename string `db:"middlename" json:"middlename"`

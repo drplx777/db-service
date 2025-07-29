@@ -12,12 +12,6 @@ import (
 )
 
 func main() {
-	// Настройка логирования
-	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
-	}))
-	slog.SetDefault(logger)
-
 	pool, err := database.ConnectDB()
 	if err != nil {
 		log.Fatalf("DB init error: %v", err)
@@ -26,7 +20,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8000" // дефолтный порт если переменная окружения не задана
+		port = "8000"
 	}
 	app := fiber.New()
 	app.Use(middleware.SlogLogger())
@@ -40,5 +34,4 @@ func main() {
 	if err := app.Listen(":" + port); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
-
 }
